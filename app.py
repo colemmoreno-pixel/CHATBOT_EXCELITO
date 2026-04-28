@@ -12,8 +12,8 @@ if "GOOGLE_API_KEY" not in st.secrets:
 
 genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 
-# Usamos el nombre de modelo más estándar
-model = genai.GenerativeModel('gemini-1.5-flash')
+# CAMBIO DEFINITIVO: Usamos 'gemini-pro', que es el modelo más compatible con todas las versiones de la librería
+model = genai.GenerativeModel('gemini-pro')
 
 # 3. Historial de mensajes
 if "messages" not in st.session_state:
@@ -31,11 +31,12 @@ if prompt := st.chat_input("¿En qué puedo ayudarte hoy?"):
 
     with st.chat_message("assistant"):
         try:
-            # Aquí intentamos la respuesta
-            response = model.generate_content(f"Eres un experto en Excel. Responde a: {prompt}")
+            # Generar respuesta
+            response = model.generate_content(f"Eres un experto en Excel. Responde de forma didáctica a: {prompt}")
+            
             st.markdown(response.text)
             st.session_state.messages.append({"role": "assistant", "content": response.text})
         except Exception as e:
-            # Si vuelve a fallar, este mensaje nos dirá exactamente por qué
-            st.error("Lo siento, sigo teniendo problemas para conectar.")
-            st.write(f"Aviso técnico: {e}")
+            st.error("Error de conexión.")
+            # Si esto falla, el problema es la región o la API Key misma
+            st.write(f"Nota técnica: {e}")
